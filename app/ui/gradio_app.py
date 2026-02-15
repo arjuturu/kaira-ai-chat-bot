@@ -91,9 +91,7 @@ def llm_chat_handler(message, history, user_api_key):
 # -----------------------------
 def launch_app():
     with gr.Blocks(
-        title="AI Document Chatbot",theme=gr.themes.Soft(
-        text_size="lg"   # increases base font
-    )) as demo:
+        title="AI Document Chatbot") as demo:
 
         with gr.Column(elem_classes="container"):
 
