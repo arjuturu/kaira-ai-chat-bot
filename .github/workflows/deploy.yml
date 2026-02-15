@@ -23,4 +23,4 @@ jobs:
         run: |
           git config user.name "arjuturu"
           git config user.email "arjuturu@gmail.com"
-          git push https://${{ env.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/${{ env.HF_USERNAME }}/${{ env.SPACE_NAME }} main --force
+          git push https://oauth2:${HF_TOKEN}@huggingface.co/spaces/${{ env.HF_USERNAME }}/${{ env.SPACE_NAME }} main --force
