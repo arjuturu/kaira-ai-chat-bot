@@ -91,20 +91,23 @@ def llm_chat_handler(message, history, user_api_key):
 # -----------------------------
 def launch_app():
     with gr.Blocks(
-        title="AI Document Chatbot",) as demo:
+        title="AI Document Chatbot",theme=gr.themes.Soft(
+        text_size="lg"   # increases base font
+    )) as demo:
 
         with gr.Column(elem_classes="container"):
 
             gr.Markdown(
-                "## 📘 Kaira AI Chatbot\n"
+                "## Kaira AI Chatbot\n"
                 "Ask/Summarize your documents. Or bring your own key to ask LLM directly."
             )
 
             # Mode Selector
             mode_selector = gr.Radio(
-                ["📄 RAG Mode", "🤖 LLM Mode"],
+                ["RAG Mode", "LLM Mode"],
                 value="📄 RAG Mode",
-                label="Choose Mode"
+                label="Choose Mode",
+                scale=1
             )
 
             # ---------------- RAG SECTION ----------------
@@ -132,7 +135,7 @@ def launch_app():
 
                 gr.ChatInterface(
                     fn=rag_chat_handler,
-                    chatbot=gr.Chatbot(height=400),
+                    chatbot=gr.Chatbot(height=320),
                 )
 
             # ---------------- LLM SECTION ----------------
@@ -167,13 +170,35 @@ def launch_app():
 
     # demo.launch(share=True)
     demo.launch(
+    server_name="0.0.0.0",
+    server_port=7860,
     css="""
-    body { background-color: #f9fafb; }
-    .container { max-width: 700px; margin: auto; padding: 20px; }
-    .mode-buttons { display: flex; gap: 10px; }
-    .mode-buttons button { flex: 1; }
-    .error-border textarea { border: 2px solid red !important; }
-    """,
-    share=True
+    body {
+        font-size: 16px;
+    }
+
+    .gradio-container {
+        max-width: 100% !important;
+        padding: 12px !important;
+    }
+
+    button {
+        font-size: 16px !important;
+        padding: 10px 14px !important;
+    }
+
+    textarea {
+        font-size: 16px !important;
+    }
+
+    input {
+        font-size: 16px !important;
+    }
+
+    .chatbot {
+        height: 420px !important;
+    }
+    """
 )
+
 
