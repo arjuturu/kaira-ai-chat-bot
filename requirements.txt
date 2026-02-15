@@ -1,0 +1,23 @@
+# UI
+gradio>=4.0
+
+# LangChain core
+langchain>=0.1.0
+
+# OpenAI integrations for LangChain (CRITICAL)
+langchain-openai
+langchain-community
+
+# OpenAI client
+openai
+tiktoken
+
+# Vector store
+faiss-cpu
+
+# Document loaders
+pypdf
+python-docx
+
+# Environment variables (local dev)
+python-dotenv

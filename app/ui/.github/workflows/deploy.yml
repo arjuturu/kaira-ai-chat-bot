@@ -1,0 +1,26 @@
+name: Sync to Hugging Face Spaces
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+      
+      - name: Push to Hugging Face Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_USERNAME: ${{ secrets.HF_USERNAME || 'your-hf-username' }}
+          SPACE_NAME: ${{ secrets.SPACE_NAME || 'your-space-name' }}
+        run: |
+          git config user.name "arjuturu"
+          git config user.email "arjuturu@gmail.com"
+          git push https://${{ env.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/${{ env.HF_USERNAME }}/${{ env.SPACE_NAME }} main --force
