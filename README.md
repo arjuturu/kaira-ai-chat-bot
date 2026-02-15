@@ -1,3 +1,15 @@
+---
+title: AI Document Chatbot
+emoji: 🤖
+colorFrom: blue
+colorTo: purple
+sdk: gradio
+sdk_version: 4.0.0
+app_file: app/main.py
+pinned: false
+---
+
+
 AI Document Chatbot
 An AI-powered chatbot that lets you upload documents (PDF, DOCX, TXT) and interact with them through summaries and question answering.
 ✨ Features
