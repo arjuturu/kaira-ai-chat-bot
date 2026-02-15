@@ -7,8 +7,9 @@ from app.services.vector_store import build_vector_store
 from app.services.summarizer import summarize
 from app.services.chat_service import rag_chat
 
-vector_store = None
-document_text = None
+vector_state = gr.State(None)
+document_state = gr.State(None)
+
 
 
 # -----------------------------
@@ -23,7 +24,7 @@ def on_file_upload(file):
     document_text = extract_text(file)
     vector_store = build_vector_store(document_text)
 
-    return "✅ File loaded and ready for questions to be answered."
+    return "✅ File loaded and ready for questions to be answered.", vector_store, document_text
 
 
 # -----------------------------
@@ -41,9 +42,11 @@ def on_summary():
 # -----------------------------
 # RAG CHAT HANDLER
 # -----------------------------
-def rag_chat_handler(message, history):
-    global vector_store
+def rag_chat_handler(message, history, vector_store):
+    if vector_store is None:
+        return "Please upload a document(.txt, .docx and .pdf)."
     return rag_chat(message, vector_store)
+
 
 
 # -----------------------------
@@ -126,7 +129,7 @@ def launch_app():
                     label="Summary"
                 )
 
-                file_upload.change(on_file_upload, file_upload, status)
+                file_upload.change( on_file_upload, inputs=file_upload, outputs=[status, vector_state, document_state] )
                 summary_btn.click(on_summary, None, summary_output)
 
                 gr.Markdown("### Ask Your Document")
@@ -134,6 +137,7 @@ def launch_app():
                 gr.ChatInterface(
                     fn=rag_chat_handler,
                     chatbot=gr.Chatbot(height=320),
+                    additional_inputs=[vector_state]
                 )
 
             # ---------------- LLM SECTION ----------------
