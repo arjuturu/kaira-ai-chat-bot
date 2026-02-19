@@ -1,0 +1,72 @@
+# ---------------------------
+# Python
+# ---------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual Environment
+venv/
+.env/
+.env.*
+.venv/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# ---------------------------
+# Environment Variables
+# ---------------------------
+.env
+.env.local
+.env.production
+
+# ---------------------------
+# IDE / Editor
+# ---------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---------------------------
+# OS Files
+# ---------------------------
+.DS_Store
+Thumbs.db
+
+# ---------------------------
+# Logs
+# ---------------------------
+*.log
+
+# ---------------------------
+# FAISS / Vector Stores
+# ---------------------------
+*.faiss
+*.index
+vector_store/
+embeddings/
+
+# ---------------------------
+# Temporary Uploads
+# ---------------------------
+uploads/
+temp/
+tmp/
+
+# ---------------------------
+# Testing / Coverage
+# ---------------------------
+.coverage
+htmlcov/
+.pytest_cache/
+
+# ---------------------------
+# Hugging Face Specific
+# ---------------------------
+.huggingface/
