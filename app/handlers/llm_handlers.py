@@ -5,7 +5,7 @@ from langchain_core.messages import HumanMessage, AIMessage
 def handle_llm_chat(message, history, user_api_key):
 
     if not user_api_key:
-        return "⚠️ Please enter your OpenAI API key."
+        return "⚠️ Please enter your OpenAI API key to use LLM Chat. You can generate one at [OpenAI’s API key page](https://platform.openai.com/account/api-keys)"
 
     try:
         llm = ChatOpenAI(
@@ -31,9 +31,9 @@ def handle_llm_chat(message, history, user_api_key):
         error_text = str(e).lower()
 
         if "401" in error_text:
-            return "❌ Invalid API key."
+            return "❌ Invalid API key. You can generate one at https://platform.openai.com/api-keys"
 
         if "rate limit" in error_text:
-            return "⚠️ Rate limit exceeded."
+            return "⚠️ Rate limit exceeded. Please wait a moment and try again."
 
-        return "⚠️ Unable to process request."
+        return "⚠️ Unable to process request. Please check your API key and try again."
