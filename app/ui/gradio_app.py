@@ -16,9 +16,11 @@ def launch_app():
 
         gr.Markdown(
             """
-        ** Kaira AI Chat Bot**
-        Welcome to Kaira AI, your intelligent assistant for document interaction and general conversations!"""
-    )
+        # Kaira AI Chat Bot
+
+        Welcome to Kaira AI, your intelligent assistant for document interaction and general conversations!
+            """
+        )
 
        
         with gr.Row():
