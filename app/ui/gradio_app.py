@@ -16,23 +16,16 @@ def launch_app():
 
         gr.Markdown(
             """
-            <div style="text-align:center; background:#f9fafb; padding:14px; border-bottom:1px solid #ddd;">
-                <div style="font-size:28px; font-weight:700; color:#1565c0; margin-bottom:8px;">
-                    Kaira AI Chat Bot
-                </div>
-                <div style="font-size:16px; font-weight:500; line-height:1.6;">
-                    📄 Select <b>Document Chat</b> to interact with your uploaded files<br>
-                    🤖 Select <b>LLM Chat</b> for general conversations with the language model
-                </div>
-            </div>
-            """
-        )
+        ** Kaira AI Chat Bot**
+        Welcome to Kaira AI, your intelligent assistant for document interaction and general conversations!"""
+    )
+
        
         with gr.Row():
             mode_selector = gr.Radio(
                 choices=[("📄 Document Chat", "rag"), ("🤖 LLM Chat", "llm")],
                 value="rag",
-                label="Select chat mode"
+            label="Select chat mode. Document Chat allows you to interact with uploaded files, while LLM Chat is for general conversations with the language model."
             )
 
         with gr.Column(visible=True) as rag_section:
