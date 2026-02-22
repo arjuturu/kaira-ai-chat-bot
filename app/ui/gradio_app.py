@@ -8,6 +8,7 @@ from app.services.summarizer import summarize
 
 
 def timestamped(role, message):
+    """Helper to format messages with timestamp."""
     now = datetime.now().strftime("%d %b %H:%M")
     return {"role": role, "content": f"[{now}] {message}"}
 
@@ -18,8 +19,6 @@ def launch_app():
         # States for persistence
         vector_state = gr.State(None)
         document_state = gr.State(None)
-        rag_history = gr.State([])
-        llm_history = gr.State([])
 
         # Header
         gr.Markdown(
@@ -48,14 +47,13 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
 
             summary_btn.click(summarize, inputs=document_state, outputs=summary_output)
 
-            def rag_chat(message, history, vector_state, rag_history):
+            def rag_chat(message, history, vector_state):
+                # Just return the assistant's reply; ChatInterface manages history
                 reply = handle_rag_chat(message, history, vector_state)
-                rag_history.append(timestamped("user", message))
-                rag_history.append(timestamped("assistant", reply))
-                return rag_history
+                return reply
 
             gr.ChatInterface(
-                fn=lambda msg, hist: rag_chat(msg, hist, vector_state.value, rag_history.value),
+                fn=lambda msg, hist: rag_chat(msg, hist, vector_state.value),
                 chatbot=gr.Chatbot(height=280),
                 textbox=gr.Textbox(
                     label="Ask about your document",
@@ -69,14 +67,12 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             api_key_input = gr.Textbox(label="OpenAI API Key", type="password")
             gr.Markdown("🔑 [Get your OpenAI API key here](https://platform.openai.com/account/api-keys)")
 
-            def llm_chat(message, history, api_key, llm_history):
+            def llm_chat(message, history, api_key):
                 reply = handle_llm_chat(message, history, api_key)
-                llm_history.append(timestamped("user", message))
-                llm_history.append(timestamped("assistant", reply))
-                return llm_history
+                return reply
 
             gr.ChatInterface(
-                fn=lambda msg, hist: llm_chat(msg, hist, api_key_input.value, llm_history.value),
+                fn=lambda msg, hist: llm_chat(msg, hist, api_key_input.value),
                 chatbot=gr.Chatbot(height=280),
                 textbox=gr.Textbox(
                     label="Ask the language model",
