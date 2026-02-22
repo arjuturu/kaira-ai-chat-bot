@@ -28,7 +28,7 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             """
         )
 
-        # Mode selector
+        # Mode selector (default = Document Chat)
         mode_selector = gr.Radio(
             choices=[("📄 Document Chat", "rag"), ("🤖 LLM Chat", "llm")],
             value="rag",
@@ -59,7 +59,10 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             )
 
             rag_chatbot = gr.Chatbot(height=280)
-            rag_input = gr.Textbox(label="Ask about your document", placeholder="💬 Type a question about your uploaded file...")
+            rag_input = gr.Textbox(
+                label="Ask about your document",
+                placeholder="🔍 Ask me to summarize, explain, or extract insights..."
+            )
             rag_send = gr.Button("Send")
             rag_clear = gr.Button("Clear Chat")
 
@@ -83,7 +86,10 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             gr.Markdown("🔑 [Get your OpenAI API key here](https://platform.openai.com/account/api-keys)")
 
             llm_chatbot = gr.Chatbot(height=280)
-            llm_input = gr.Textbox(label="Ask the language model",placeholder="💬 Start a general conversation with the AI...")
+            llm_input = gr.Textbox(
+                label="Ask the language model",
+                placeholder="🤖 Ask me anything — coding help, brainstorming, or casual chat..."
+            )
             llm_send = gr.Button("Send")
             llm_clear = gr.Button("Clear Chat")
 
@@ -99,17 +105,31 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             llm_send.click(llm_chat, inputs=[llm_input, llm_chatbot, api_key_input], outputs=llm_chatbot)
             llm_clear.click(clear_llm_chat, outputs=llm_chatbot)
 
-        # Mode switch logic
+        # Corrected mode switch logic
         def switch_mode(mode):
             if mode == "rag":
-                return gr.update(visible=True), gr.update(visible=False)
+                return (
+                    gr.update(visible=True),   # rag_section
+                    gr.update(visible=False),  # llm_section
+                    gr.update(visible=True),   # rag_chatbot
+                    gr.update(visible=False),  # llm_chatbot
+                    gr.update(visible=True),   # rag_input
+                    gr.update(visible=False),  # llm_input
+                )
             else:
-                return gr.update(visible=False), gr.update(visible=True)
+                return (
+                    gr.update(visible=False),
+                    gr.update(visible=True),
+                    gr.update(visible=False),
+                    gr.update(visible=True),
+                    gr.update(visible=False),
+                    gr.update(visible=True),
+                )
 
         mode_selector.change(
             switch_mode,
             inputs=mode_selector,
-            outputs=[rag_section, llm_section]
+            outputs=[rag_section, llm_section, rag_chatbot, llm_chatbot, rag_input, llm_input]
         )
 
         # Persistent footer branding
