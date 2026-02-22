@@ -27,15 +27,8 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             """
         )
 
-        # Mode selector (default = Document Chat)
-        mode_selector = gr.Radio(
-            choices=[("📄 Document Chat", "rag"), ("🤖 LLM Chat", "llm")],
-            value="rag",
-            label="Select chat mode"
-        )
-
-        # Document Chat section
-        with gr.Group(visible=True) as rag_section:
+        # Tabs instead of radio toggle
+        with gr.Tab("📄 Document Chat"):
             file_upload = gr.File(
                 label="Upload (.pdf, .docx, .txt)",
                 file_types=[".pdf", ".docx", ".txt"]
@@ -72,8 +65,7 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             rag_send.click(rag_chat, inputs=[rag_input, rag_chatbot, vector_state], outputs=rag_chatbot)
             rag_clear.click(clear_rag_chat, outputs=rag_chatbot)
 
-        # LLM Chat section
-        with gr.Group(visible=False) as llm_section:
+        with gr.Tab("🤖 LLM Chat"):
             gr.Markdown("⚠️ Enter your OpenAI API key to continue.")
             api_key_input = gr.Textbox(label="OpenAI API Key", type="password")
             gr.Markdown("🔑 [Get your OpenAI API key here](https://platform.openai.com/account/api-keys)")
@@ -97,47 +89,6 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
 
             llm_send.click(llm_chat, inputs=[llm_input, llm_chatbot, api_key_input], outputs=llm_chatbot)
             llm_clear.click(clear_llm_chat, outputs=llm_chatbot)
-
-        # Corrected mode switch logic — toggle sections AND children
-        def switch_mode(mode):
-            if mode == "rag":
-                return (
-                    gr.update(visible=True),   # rag_section
-                    gr.update(visible=False),  # llm_section
-                    gr.update(visible=True),   # rag_chatbot
-                    gr.update(visible=False),  # llm_chatbot
-                    gr.update(visible=True),   # rag_input
-                    gr.update(visible=False),  # llm_input
-                    gr.update(visible=True),   # rag_send
-                    gr.update(visible=False),  # llm_send
-                    gr.update(visible=True),   # rag_clear
-                    gr.update(visible=False),  # llm_clear
-                )
-            else:
-                return (
-                    gr.update(visible=False),
-                    gr.update(visible=True),
-                    gr.update(visible=False),
-                    gr.update(visible=True),
-                    gr.update(visible=False),
-                    gr.update(visible=True),
-                    gr.update(visible=False),
-                    gr.update(visible=True),
-                    gr.update(visible=False),
-                    gr.update(visible=True),
-                )
-
-        mode_selector.change(
-            switch_mode,
-            inputs=mode_selector,
-            outputs=[
-                rag_section, llm_section,
-                rag_chatbot, llm_chatbot,
-                rag_input, llm_input,
-                rag_send, llm_send,
-                rag_clear, llm_clear
-            ]
-        )
 
         # Persistent footer branding
         gr.Markdown(
