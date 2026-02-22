@@ -21,7 +21,7 @@ def launch_app():
         # Header
         gr.Markdown(
             """
-# 🤖 **Kaira AI Chat Bot**
+#  **Kaira AI Chat Bot**
 
 Welcome to Kaira AI, your intelligent assistant for document interaction and general conversations!
             """
@@ -65,7 +65,7 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             rag_send.click(rag_chat, inputs=[rag_input, rag_chatbot, vector_state], outputs=rag_chatbot)
             rag_clear.click(clear_rag_chat, outputs=rag_chatbot)
 
-        with gr.Tab("🤖 LLM Chat"):
+        with gr.Tab("✨ LLM Chat"):
             gr.Markdown("⚠️ Enter your OpenAI API key to continue.")
             api_key_input = gr.Textbox(label="OpenAI API Key", type="password")
             gr.Markdown("🔑 [Get your OpenAI API key here](https://platform.openai.com/account/api-keys)")
