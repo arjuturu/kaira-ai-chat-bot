@@ -52,7 +52,7 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
                 reply = handle_rag_chat(message, history, vector_state)
                 rag_history.append(timestamped("user", message))
                 rag_history.append(timestamped("assistant", reply))
-                return rag_history, rag_history
+                return rag_history
 
             gr.ChatInterface(
                 fn=lambda msg, hist: rag_chat(msg, hist, vector_state.value, rag_history.value),
@@ -60,8 +60,7 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
                 textbox=gr.Textbox(
                     label="Ask about your document",
                     placeholder="🔍 Ask me to summarize, explain, or extract insights..."
-                ),
-                state=rag_history
+                )
             )
 
         # LLM Chat Tab
@@ -74,7 +73,7 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
                 reply = handle_llm_chat(message, history, api_key)
                 llm_history.append(timestamped("user", message))
                 llm_history.append(timestamped("assistant", reply))
-                return llm_history, llm_history
+                return llm_history
 
             gr.ChatInterface(
                 fn=lambda msg, hist: llm_chat(msg, hist, api_key_input.value, llm_history.value),
@@ -82,8 +81,7 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
                 textbox=gr.Textbox(
                     label="Ask the language model",
                     placeholder="🧠 Ask me anything — coding help, brainstorming, or casual chat..."
-                ),
-                state=llm_history
+                )
             )
 
         # Footer branding
