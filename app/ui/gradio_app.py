@@ -9,7 +9,7 @@ from app.services.summarizer import summarize
 
 def timestamped(role, message):
     """Helper to format messages with timestamp."""
-    now = datetime.now().strftime("%H:%M")
+    now = datetime.now().strftime("%d %b %H:%M")
     return {"role": role, "content": f"[{now}] {message}"}
 
 
@@ -19,7 +19,7 @@ def launch_app():
         vector_state = gr.State(None)
         document_state = gr.State(None)
 
-        # Top header
+        # Header
         gr.Markdown(
             """
 # 🤖 **Kaira AI Chat Bot**
@@ -36,7 +36,8 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
         )
 
         # Document Chat section
-        with gr.Column(visible=True) as rag_section:
+        rag_section = gr.Group(visible=True)
+        with rag_section:
             file_upload = gr.File(
                 label="Upload (.pdf, .docx, .txt)",
                 file_types=[".pdf", ".docx", ".txt"]
@@ -57,11 +58,8 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
                 outputs=summary_output
             )
 
-            rag_chatbot = gr.Chatbot(
-                height=280,
-                value=[timestamped("assistant", "👋 Hi! Upload a document and ask me questions about it.")]
-            )
-            rag_input = gr.Textbox(label="Ask about your document")
+            rag_chatbot = gr.Chatbot(height=280)
+            rag_input = gr.Textbox(label="Ask about your document", placeholder="💬 Type a question about your uploaded file...")
             rag_send = gr.Button("Send")
             rag_clear = gr.Button("Clear Chat")
 
@@ -72,35 +70,20 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
                 return history
 
             def clear_rag_chat():
-                return [timestamped("assistant", "👋 Hi! Upload a document and ask me questions about it.")]
+                return []
 
-            rag_send.click(
-                rag_chat,
-                inputs=[rag_input, rag_chatbot, vector_state],
-                outputs=rag_chatbot
-            )
-
-            rag_clear.click(
-                clear_rag_chat,
-                outputs=rag_chatbot
-            )
+            rag_send.click(rag_chat, inputs=[rag_input, rag_chatbot, vector_state], outputs=rag_chatbot)
+            rag_clear.click(clear_rag_chat, outputs=rag_chatbot)
 
         # LLM Chat section
-        with gr.Column(visible=False) as llm_section:
+        llm_section = gr.Group(visible=False)
+        with llm_section:
             gr.Markdown("⚠️ Enter your OpenAI API key to continue.")
-            api_key_input = gr.Textbox(
-                label="OpenAI API Key",
-                type="password"
-            )
-            gr.Markdown(
-                "🔑 [Get your OpenAI API key here](https://platform.openai.com/account/api-keys)"
-            )
+            api_key_input = gr.Textbox(label="OpenAI API Key", type="password")
+            gr.Markdown("🔑 [Get your OpenAI API key here](https://platform.openai.com/account/api-keys)")
 
-            llm_chatbot = gr.Chatbot(
-                height=280,
-                value=[timestamped("assistant", "👋 Hi! Enter your API key and start chatting with the language model.")]
-            )
-            llm_input = gr.Textbox(label="Ask the language model")
+            llm_chatbot = gr.Chatbot(height=280)
+            llm_input = gr.Textbox(label="Ask the language model",placeholder="💬 Start a general conversation with the AI...")
             llm_send = gr.Button("Send")
             llm_clear = gr.Button("Clear Chat")
 
@@ -111,18 +94,10 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
                 return history
 
             def clear_llm_chat():
-                return [timestamped("assistant", "👋 Hi! Enter your API key and start chatting with the language model.")]
+                return []
 
-            llm_send.click(
-                llm_chat,
-                inputs=[llm_input, llm_chatbot, api_key_input],
-                outputs=llm_chatbot
-            )
-
-            llm_clear.click(
-                clear_llm_chat,
-                outputs=llm_chatbot
-            )
+            llm_send.click(llm_chat, inputs=[llm_input, llm_chatbot, api_key_input], outputs=llm_chatbot)
+            llm_clear.click(clear_llm_chat, outputs=llm_chatbot)
 
         # Mode switch logic
         def switch_mode(mode):
@@ -141,15 +116,12 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
         gr.Markdown(
             """
 ---
-**Built by Amaranathareddy Juturu** | Built with ❤️ using OpenAI, LangChain, Faiss, and Gradio. | [GitHub Repo](https://github.com/arjuturu/kaira-ai-chat-bot)
+**Built by Amaranathareddy Juturu** | Built with ❤️ using OpenAI, LangChain, Faiss, and Gradio.  
+[GitHub Repo](https://github.com/arjuturu/kaira-ai-chat-bot)
             """
         )
 
-    demo.launch(
-        server_name="0.0.0.0",
-        server_port=7860,
-        share=True
-    )
+    demo.launch(server_name="0.0.0.0", server_port=7860, share=True)
 
 
 if __name__ == "__main__":
