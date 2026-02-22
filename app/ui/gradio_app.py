@@ -50,10 +50,31 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
                 outputs=summary_output
             )
 
-            gr.ChatInterface(
-                fn=handle_rag_chat,
-                additional_inputs=[vector_state],
-                chatbot=gr.Chatbot(height=280),
+            rag_chatbot = gr.Chatbot(
+                height=280,
+                value=[("🤖", "👋 Hi! Upload a document and ask me questions about it.")]
+            )
+            rag_input = gr.Textbox(label="Ask about your document")
+            rag_send = gr.Button("Send")
+            rag_clear = gr.Button("Clear Chat")
+
+            def rag_chat(message, history, vector_state):
+                reply = handle_rag_chat(message, history, vector_state)
+                history.append((message, reply))
+                return history
+
+            def clear_rag_chat():
+                return [("🤖", "👋 Hi! Upload a document and ask me questions about it.")]
+
+            rag_send.click(
+                rag_chat,
+                inputs=[rag_input, rag_chatbot, vector_state],
+                outputs=rag_chatbot
+            )
+
+            rag_clear.click(
+                clear_rag_chat,
+                outputs=rag_chatbot
             )
 
         # LLM Chat section
@@ -67,10 +88,31 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
                 "🔑 [Get your OpenAI API key here](https://platform.openai.com/account/api-keys)"
             )
 
-            gr.ChatInterface(
-                fn=handle_llm_chat,
-                additional_inputs=[api_key_input],
-                chatbot=gr.Chatbot(height=280),
+            llm_chatbot = gr.Chatbot(
+                height=280,
+                value=[("🤖", "👋 Hi! Enter your API key and start chatting with the language model.")]
+            )
+            llm_input = gr.Textbox(label="Ask the language model")
+            llm_send = gr.Button("Send")
+            llm_clear = gr.Button("Clear Chat")
+
+            def llm_chat(message, history, api_key):
+                reply = handle_llm_chat(message, history, api_key)
+                history.append((message, reply))
+                return history
+
+            def clear_llm_chat():
+                return [("🤖", "👋 Hi! Enter your API key and start chatting with the language model.")]
+
+            llm_send.click(
+                llm_chat,
+                inputs=[llm_input, llm_chatbot, api_key_input],
+                outputs=llm_chatbot
+            )
+
+            llm_clear.click(
+                clear_llm_chat,
+                outputs=llm_chatbot
             )
 
         # Mode switch logic
@@ -84,6 +126,14 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             switch_mode,
             inputs=mode_selector,
             outputs=[rag_section, llm_section]
+        )
+
+        # Persistent footer branding
+        gr.Markdown(
+            """
+---
+**Powered by Kaira AI** | Built with ❤️ using Gradio
+            """
         )
 
     demo.launch(
