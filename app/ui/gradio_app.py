@@ -1,4 +1,3 @@
-import os
 import gradio as gr
 
 from app.handlers.upload_handlers import safe_handle_file_upload
@@ -16,7 +15,7 @@ def launch_app():
         # Top header
         gr.Markdown(
             """
-#Kaira AI Chat Bot
+# 🤖 **Kaira AI Chat Bot**
 
 Welcome to Kaira AI, your intelligent assistant for document interaction and general conversations!
             """
@@ -78,7 +77,8 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
         def switch_mode(mode):
             if mode == "rag":
                 return gr.update(visible=True), gr.update(visible=False)
-            return gr.update(visible=False), gr.update(visible=True)
+            else:
+                return gr.update(visible=False), gr.update(visible=True)
 
         mode_selector.change(
             switch_mode,
@@ -86,9 +86,9 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             outputs=[rag_section, llm_section]
         )
 
-    # In Gradio 6.0, only server_name, server_port, share, show_error, etc. are valid here.
-    # Title and CSS should be handled via Markdown/HTML or theme, not launch().
     demo.launch(
+        server_name="0.0.0.0",
+        server_port=7860,
         share=True
     )
 
