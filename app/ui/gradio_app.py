@@ -15,19 +15,22 @@ def timestamped(role, message):
 def launch_app():
     with gr.Blocks() as demo:
 
+        # States for persistence
         vector_state = gr.State(None)
         document_state = gr.State(None)
+        rag_history = gr.State([])
+        llm_history = gr.State([])
 
         # Header
         gr.Markdown(
             """
-#  **Kaira AI Chat Bot**
+# 🚀 **Kaira AI Chat Bot**
 
 Welcome to Kaira AI, your intelligent assistant for document interaction and general conversations!
             """
         )
 
-        # Tabs instead of radio toggle
+        # Document Chat Tab
         with gr.Tab("📄 Document Chat"):
             file_upload = gr.File(
                 label="Upload (.pdf, .docx, .txt)",
@@ -37,14 +40,6 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             summary_btn = gr.Button("Summarize")
             summary_output = gr.Textbox(lines=4, interactive=False)
 
-            rag_chatbot = gr.Chatbot(height=280)
-            rag_input = gr.Textbox(
-                label="Ask about your document",
-                placeholder="🔍 Ask me to summarize, explain, or extract insights..."
-            )
-            rag_send = gr.Button("Send")
-            rag_clear = gr.Button("Clear Chat")
-
             file_upload.change(
                 safe_handle_file_upload,
                 inputs=file_upload,
@@ -53,44 +48,45 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
 
             summary_btn.click(summarize, inputs=document_state, outputs=summary_output)
 
-            def rag_chat(message, history, vector_state):
+            def rag_chat(message, history, vector_state, rag_history):
                 reply = handle_rag_chat(message, history, vector_state)
-                history.append(timestamped("user", message))
-                history.append(timestamped("assistant", reply))
-                return history
+                rag_history.append(timestamped("user", message))
+                rag_history.append(timestamped("assistant", reply))
+                return rag_history, rag_history
 
-            def clear_rag_chat():
-                return []
+            gr.ChatInterface(
+                fn=lambda msg, hist: rag_chat(msg, hist, vector_state.value, rag_history.value),
+                chatbot=gr.Chatbot(height=280),
+                textbox=gr.Textbox(
+                    label="Ask about your document",
+                    placeholder="🔍 Ask me to summarize, explain, or extract insights..."
+                ),
+                state=rag_history
+            )
 
-            rag_send.click(rag_chat, inputs=[rag_input, rag_chatbot, vector_state], outputs=rag_chatbot)
-            rag_clear.click(clear_rag_chat, outputs=rag_chatbot)
-
-        with gr.Tab("✨ LLM Chat"):
+        # LLM Chat Tab
+        with gr.Tab("🧠 LLM Chat"):
             gr.Markdown("⚠️ Enter your OpenAI API key to continue.")
             api_key_input = gr.Textbox(label="OpenAI API Key", type="password")
             gr.Markdown("🔑 [Get your OpenAI API key here](https://platform.openai.com/account/api-keys)")
 
-            llm_chatbot = gr.Chatbot(height=280)
-            llm_input = gr.Textbox(
-                label="Ask the language model",
-                placeholder="🤖 Ask me anything — coding help, brainstorming, or casual chat..."
-            )
-            llm_send = gr.Button("Send")
-            llm_clear = gr.Button("Clear Chat")
-
-            def llm_chat(message, history, api_key):
+            def llm_chat(message, history, api_key, llm_history):
                 reply = handle_llm_chat(message, history, api_key)
-                history.append(timestamped("user", message))
-                history.append(timestamped("assistant", reply))
-                return history
+                llm_history.append(timestamped("user", message))
+                llm_history.append(timestamped("assistant", reply))
+                return llm_history, llm_history
 
-            def clear_llm_chat():
-                return []
+            gr.ChatInterface(
+                fn=lambda msg, hist: llm_chat(msg, hist, api_key_input.value, llm_history.value),
+                chatbot=gr.Chatbot(height=280),
+                textbox=gr.Textbox(
+                    label="Ask the language model",
+                    placeholder="🧠 Ask me anything — coding help, brainstorming, or casual chat..."
+                ),
+                state=llm_history
+            )
 
-            llm_send.click(llm_chat, inputs=[llm_input, llm_chatbot, api_key_input], outputs=llm_chatbot)
-            llm_clear.click(clear_llm_chat, outputs=llm_chatbot)
-
-        # Persistent footer branding
+        # Footer branding
         gr.Markdown(
             """
 ---
