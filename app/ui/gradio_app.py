@@ -1,9 +1,16 @@
 import gradio as gr
+from datetime import datetime
 
 from app.handlers.upload_handlers import safe_handle_file_upload
 from app.handlers.rag_handlers import handle_rag_chat
 from app.handlers.llm_handlers import handle_llm_chat
 from app.services.summarizer import summarize
+
+
+def timestamped(role, message):
+    """Helper to format messages with timestamp."""
+    now = datetime.now().strftime("%H:%M")
+    return {"role": role, "content": f"[{now}] {message}"}
 
 
 def launch_app():
@@ -52,7 +59,7 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
 
             rag_chatbot = gr.Chatbot(
                 height=280,
-                value=[("🤖", "👋 Hi! Upload a document and ask me questions about it.")]
+                value=[timestamped("assistant", "👋 Hi! Upload a document and ask me questions about it.")]
             )
             rag_input = gr.Textbox(label="Ask about your document")
             rag_send = gr.Button("Send")
@@ -60,11 +67,12 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
 
             def rag_chat(message, history, vector_state):
                 reply = handle_rag_chat(message, history, vector_state)
-                history.append((message, reply))
+                history.append(timestamped("user", message))
+                history.append(timestamped("assistant", reply))
                 return history
 
             def clear_rag_chat():
-                return [("🤖", "👋 Hi! Upload a document and ask me questions about it.")]
+                return [timestamped("assistant", "👋 Hi! Upload a document and ask me questions about it.")]
 
             rag_send.click(
                 rag_chat,
@@ -90,7 +98,7 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
 
             llm_chatbot = gr.Chatbot(
                 height=280,
-                value=[("🤖", "👋 Hi! Enter your API key and start chatting with the language model.")]
+                value=[timestamped("assistant", "👋 Hi! Enter your API key and start chatting with the language model.")]
             )
             llm_input = gr.Textbox(label="Ask the language model")
             llm_send = gr.Button("Send")
@@ -98,11 +106,12 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
 
             def llm_chat(message, history, api_key):
                 reply = handle_llm_chat(message, history, api_key)
-                history.append((message, reply))
+                history.append(timestamped("user", message))
+                history.append(timestamped("assistant", reply))
                 return history
 
             def clear_llm_chat():
-                return [("🤖", "👋 Hi! Enter your API key and start chatting with the language model.")]
+                return [timestamped("assistant", "👋 Hi! Enter your API key and start chatting with the language model.")]
 
             llm_send.click(
                 llm_chat,
@@ -132,7 +141,7 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
         gr.Markdown(
             """
 ---
-**Powered by Kaira AI** | Built with ❤️ using Gradio
+**Built by Amaranathareddy Juturu** | Built with ❤️ using OpenAI, LangChain, Faiss, and Gradio. | [GitHub Repo](https://github.com/arjuturu/kaira-ai-chat-bot)
             """
         )
 
