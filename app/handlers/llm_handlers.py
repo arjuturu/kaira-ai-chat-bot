@@ -4,6 +4,9 @@ from langchain_core.messages import HumanMessage, AIMessage
 
 def handle_llm_chat(message, history, user_api_key):
 
+    if not message or not message.strip():
+        return "⚠️ Please type a question before submitting."
+
     if not user_api_key:
         return "⚠️ Please enter your OpenAI API key to use LLM Chat. You can generate one at [OpenAI’s API key page](https://platform.openai.com/account/api-keys)"
 

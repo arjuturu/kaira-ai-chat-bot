@@ -8,7 +8,6 @@ from app.services.summarizer import summarize
 
 
 def timestamped(role, message):
-    """Helper to format messages with timestamp."""
     now = datetime.now().strftime("%d %b %H:%M")
     return {"role": role, "content": f"[{now}] {message}"}
 
@@ -48,17 +47,13 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             summary_btn.click(summarize, inputs=document_state, outputs=summary_output)
 
             def rag_chat(message, history, vector_state):
-                # Just return the assistant's reply; ChatInterface manages history
-                reply = handle_rag_chat(message, history, vector_state)
-                return reply
+                return handle_rag_chat(message, history, vector_state)
 
             gr.ChatInterface(
-                fn=lambda msg, hist: rag_chat(msg, hist, vector_state.value),
-                chatbot=gr.Chatbot(height=280),
-                textbox=gr.Textbox(
-                    label="Ask about your document",
-                    placeholder="🔍 Ask me to summarize, explain, or extract insights..."
-                )
+                fn=rag_chat,
+                title="Ask about your document",
+                description="🔍 Summarize, explain, or extract insights...",
+                additional_inputs=[vector_state]
             )
 
         # LLM Chat Tab
@@ -68,16 +63,13 @@ Welcome to Kaira AI, your intelligent assistant for document interaction and gen
             gr.Markdown("🔑 [Get your OpenAI API key here](https://platform.openai.com/account/api-keys)")
 
             def llm_chat(message, history, api_key):
-                reply = handle_llm_chat(message, history, api_key)
-                return reply
+                return handle_llm_chat(message, history, api_key)
 
             gr.ChatInterface(
-                fn=lambda msg, hist: llm_chat(msg, hist, api_key_input.value),
-                chatbot=gr.Chatbot(height=280),
-                textbox=gr.Textbox(
-                    label="Ask the language model",
-                    placeholder="🧠 Ask me anything — coding help, brainstorming, or casual chat..."
-                )
+                fn=llm_chat,
+                title="Ask the language model",
+                description="🧠 Coding help, brainstorming, or casual chat...",
+                additional_inputs=[api_key_input]
             )
 
         # Footer branding
