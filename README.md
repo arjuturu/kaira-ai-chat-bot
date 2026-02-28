@@ -38,6 +38,7 @@ An AI-powered chatbot that lets you upload documents (PDF, DOCX, TXT) and intera
 ## 🚀 Use Cases
 - 📚 **Study Assistant**: Upload lecture notes and get summaries or quiz-style questions.  
 - 🔬 **Research Helper**: Quickly extract insights from long papers.  
-- 🏢 **Knowledge Base**: Interact with company documents or manuals.  
+- 🏢 **Knowledge Base**: Interact with company documents or manuals.
+- 👔 **Recruitment Support**: Match candidate skills against job descriptions for faster hiring insights.  
 
 ---
