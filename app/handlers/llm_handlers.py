@@ -27,7 +27,7 @@ def handle_llm_chat(message, history, user_api_key):
         messages.append(HumanMessage(content=message))
 
         response = llm.invoke(messages)
-
+        print(f"LLM response: {response.content}")
         return response.content
 
     except Exception as e:

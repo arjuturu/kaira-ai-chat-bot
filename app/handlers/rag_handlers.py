@@ -8,5 +8,5 @@ def handle_rag_chat(message, history, vector_store):
 
     if vector_store is None:
         return "Please upload a document to begin."
-
+    print(f"Received message: {message}")
     return str(rag_chat(message, vector_store))

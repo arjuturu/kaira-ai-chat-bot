@@ -28,4 +28,5 @@ def handle_file_upload(file):
     vector_store = build_vector_store(document_text)
 
     # Clear summary on new upload
+    print(f"File '{file.name}' uploaded successfully. Size: {os.path.getsize(file.name) / (1024 * 1024):.2f} MB")
     return "✅ File loaded successfully.", vector_store, document_text, ""
